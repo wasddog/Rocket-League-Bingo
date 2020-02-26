@@ -14,6 +14,7 @@ class App:
         self.state = "playing"
         self.playingButtons = []
         self.endButtons = []
+        self.font = pygame.font.SysFont("arial", cellSize//2)
         self.loadButtons()
 
     def run(self):
@@ -54,11 +55,20 @@ class App:
             for selected in self.selected:
                 self.drawSelection(self.window, selected)
 
+        self.drawText(self.window)
+
+
         self.drawGrid(self.window)
         pygame.display.update()
 
 
 #### HELPER FUNCTIONS #####
+    def drawText(self, window):
+        for yidx, row in enumerate(self.grid):
+            for xidx, chlng in enumerate(row):
+                if chlng != "":
+                    pos = [(xidx*cellSize)+gridPos[0], (yidx*cellSize) + gridPos[1]]
+                    self.textToScreen(window, chlng, pos)
 
     def drawSelection(self, window, pos):
         pygame.draw.rect(window, RED, ((pos[0]*cellSize)+gridPos[0], (pos[1]*cellSize)+gridPos[1], cellSize, cellSize))
@@ -79,7 +89,9 @@ class App:
     def loadButtons(self):
         self.playingButtons.append(Button(20, 40, 100, 40))
 
+    def textToScreen(self, window, text, pos):
+        font = self.font.render(text, False, BLACK)
+        window.blit(font, pos)
 
-
-
-
+    def challengesGeneretor(self, challenges, board):
+        
