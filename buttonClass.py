@@ -3,10 +3,11 @@ from settings import *
 
 
 class Button:
-    def __init__(self, x, y, width, height,text=None , colour=(73,73,73), highlightColour=(189,189,189)):
-        self.image = pygame.Surface((width,height))
-        self.pos = (x,y)
+    def __init__(self, x, y, width, height, text=None, colour=(73, 73, 73), highlightColour=(189,189,189)):
+        self.image = pygame.Surface((width, height))
+        self.pos = (x, y)
         self.rect = self.image.get_rect()
+        self.rect.topleft = self.pos
         self.width = width
         self.height = height
         self.mousePos = None
@@ -24,12 +25,12 @@ class Button:
 
     def draw(self,window):
         self.image.fill(self.highlightColour if self.highlighted else self.colour)
-        self.drawText(self.image)
+        self.drawText(self.image, self.text)
         window.blit(self.image, self.pos)
 
 
-    def drawText(self, window):
-        self.textToScreen(window, "Generate new bingo!", [5,3])
+    def drawText(self, window, text):
+        self.textToScreen(window, text, [5,3])
 
     def textToScreen(self, window, text, pos):
         font = self.font.render(text, True, WHITE)
