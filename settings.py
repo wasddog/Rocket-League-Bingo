@@ -1,41 +1,52 @@
+import pygame
+
 challenges = [
     "Some1 asks for Trade",
     "Pre-flip goal",
     "3 Minute overtime",
-    "get into rule no.1",
+    "Get into rule no.1",
     "Team pinch goal",
-    "Score a hat trick",
-    "low five",
-    "passing play goal",
-    "fake an opponent",
-    "get a lag indicator",
-    "opponent has anime PFP",
+    "Score a Hat trick",
+    "Low five",
+    "PassingPlay goal",
+    "Fake an opponent",
+    "Get a lag indicator",
+    "Opponent has anime PFP",
     "Someone own-goals",
-    "FREEEE",
-    "make an epic save",
-    "double tap goal",
-    "someone misses open net",
-    "flip reset goal",
-    "ceiling shot",
-    "musty flip goal",
-    "someone in your team whiffs horribly",
-    "toxicity in chat",
-    "opponent using weird car",
-    "opponents rage quit(ff)",
-    "demolish both opponents",
-    "bump/demo goal",
+    "FREEEEEEE",
+    "Make an epic save",
+    "Double tap goal",
+    "Someone misses open net",
+    "Flip reset goal",
+    "Ceiling shot",
+    "Musty flip goal",
+    "You/teammate whiffs",
+    "Toxicity in chat",
+    "Opponent using weird car",
+    "Opponents RageQuit(ff)",
+    "Demo 2 in a row",
+    "Bump/demo goal",
     "Comeback (3 points or more)",
-    "Last second goal"
+    "Last second goal",
+    "Score 120kmh+ goal",
+    "PoolShot Goal",
+    "Win with 7-1 score",
+    "Turtle Goal",
+    "AirDribble Goal",
+    "Everyone miss the kickoff",
+    "Score a Kick-off goal",
+    "Score a reverse goal"
 ]
 
-
-WIDTH = 600
-HEIGHT = 600
+title = "Rocket-League Bingo"
+buttonText = "Generate new Bingo!"
+background = pygame.image.load('img.jpg')
 
 # Colors
 WHITE = (255,255,255)
 BLACK = (0,0,0)
-RED = (255,0,0)
+RED = (178,34,34)
+LIGHTBLUE = (224,255,255)
 
 # boards
 testboard = [
@@ -47,6 +58,17 @@ testboard = [
     ]
 
 # posiotons and sizes
+WIDTH = 1280
+HEIGHT = 720
+
 gridPos = (75,100)
-cellSize = 90
-gridSize = cellSize*5
+
+cellSizeW = 225
+cellSizeH = 114
+
+gridSizeW = cellSizeW*5
+gridSizeH = cellSizeH*5
+
+buttonPosition = (WIDTH//2 - 100, 20)
+bW = 200
+bH = 40
