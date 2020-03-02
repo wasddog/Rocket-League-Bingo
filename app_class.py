@@ -1,6 +1,7 @@
-import pygame, sys, random
+import pygame, sys, random, webbrowser
 from settings import *
 from buttonClass import *
+
 
 
 class App:
@@ -12,7 +13,7 @@ class App:
         self.grid = cleanBoard
         self.selected = set()
         self.mousePos = None
-        self.state = "playing"
+        self.state = "waiting"
         self.playingButtons = []
         self.font = pygame.font.SysFont("Comic Sans MS", 18)
         self.loadButtons()
@@ -23,10 +24,29 @@ class App:
                 self.playing_events()
                 self.playing_update()
                 self.playing_draw()
+            if self.state == "waiting":
+                self.waiting()
+                self.playing_update()
+                self.playing_draw()
         pygame.quit()
         sys.exit()
 
     #### PLAYING STATE ####
+    def waiting(self):
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                self.running = False
+            if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+                buttonClick = self.mouseOnButton()
+                donateClick = self.mouseOnDonate()
+                if buttonClick:
+                    self.state = "playing"
+                    self.selected = set()
+                    self.grid = self.challengesGeneretor(challenges, cleanBoard)
+                if donateClick:
+                    webbrowser.open('https://www.paypal.com/donate/?token=WbU_LYZUBv53xL1rL5zAP-3YJqDPLRt_b4GCnDrGdSNhOCIP85I7jub7YlSctockE8o1zG&country.x=IL&locale.x=IL')
+
+
     def playing_events(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -34,11 +54,16 @@ class App:
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                 selected = self.mouseOnGrid()
                 buttonClick = self.mouseOnButton()
+                donateClick = self.mouseOnDonate()
                 if selected:
                     self.selected.add(selected)
                 if buttonClick:
+                    self.state = "playing"
                     self.selected = set()
                     self.grid = self.challengesGeneretor(challenges, cleanBoard)
+                if donateClick:
+                    webbrowser.open('https://www.paypal.com/donate/?token=WbU_LYZUBv53xL1rL5zAP-3YJqDPLRt_b4GCnDrGdSNhOCIP85I7jub7YlSctockE8o1zG&country.x=IL&locale.x=IL')
+
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 3:
                 selected = self.mouseOnGrid()
                 if selected:
@@ -67,6 +92,7 @@ class App:
 
         self.drawText(self.window)
         self.drawGrid(self.window)
+        self.donateB()
         pygame.display.update()
 
     #### HELPER FUNCTIONS #####
@@ -112,7 +138,8 @@ class App:
         return ((self.mousePos[0] - buttonPosition[0]), (self.mousePos[1] - buttonPosition[1]))
 
     def loadButtons(self):
-        self.playingButtons.append(Button(WIDTH//2 - 100, 20, 200, 40))
+        self.playingButtons.append(Button(WIDTH//2 - 100, 20, 200, 40, "Generate new bingo!"))
+        #self.playingButtons.append(Button(1150, 680, 100, 30, "Donate <3"))
 
     def textToScreen(self, window, text, pos):
         font = self.font.render(text, True, BLACK)
@@ -133,3 +160,13 @@ class App:
 
     def drawBackground(self, background, xpos, ypos):
         self.window.blit(pygame.transform.scale(background, (WIDTH,HEIGHT)), [xpos, ypos])
+
+    def donateB(self):
+        self.window.blit(pygame.transform.scale(donateIMG, (donateW,donateH)), donateP)
+
+    def mouseOnDonate(self):
+        if self.mousePos[0] < donateP[0] or self.mousePos[1] < donateP[1]:
+            return False
+        if self.mousePos[0] > donateP[0] + donateW or self.mousePos[1] > donateP[1] + donateH:
+            return False
+        return ((self.mousePos[0] - donateP[0]), (self.mousePos[1] - donateP[1]))
