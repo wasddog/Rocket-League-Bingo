@@ -39,7 +39,6 @@ challenges = [
 ]
 
 title = "Rocket-League Bingo"
-buttonText = "Generate new Bingo!"
 background = pygame.image.load('img.jpg')
 
 # Colors
