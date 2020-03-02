@@ -9,7 +9,7 @@ class App:
         pygame.display.set_caption(title)
         self.window = pygame.display.set_mode((WIDTH, HEIGHT))
         self.running = True
-        self.grid = testboard
+        self.grid = cleanBoard
         self.selected = set()
         self.mousePos = None
         self.state = "playing"
@@ -38,7 +38,7 @@ class App:
                     self.selected.add(selected)
                 if buttonClick:
                     self.selected = set()
-                    self.grid = self.challengesGeneretor(challenges, testboard)
+                    self.grid = self.challengesGeneretor(challenges, cleanBoard)
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 3:
                 selected = self.mouseOnGrid()
                 if selected:
