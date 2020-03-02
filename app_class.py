@@ -4,9 +4,9 @@ from buttonClass import *
 
 
 class App:
-
     def __init__(self):
         pygame.init()
+        pygame.display.set_caption(title)
         self.window = pygame.display.set_mode((WIDTH, HEIGHT))
         self.running = True
         self.grid = testboard
@@ -14,8 +14,7 @@ class App:
         self.mousePos = None
         self.state = "playing"
         self.playingButtons = []
-        self.endButtons = []
-        self.font = pygame.font.SysFont("arial", cellSize // 2)
+        self.font = pygame.font.SysFont("Comic Sans MS", 18)
         self.loadButtons()
 
     def run(self):
@@ -28,18 +27,27 @@ class App:
         sys.exit()
 
     #### PLAYING STATE ####
-
     def playing_events(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.running = False
-            if event.type == pygame.MOUSEBUTTONDOWN:
+            if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                 selected = self.mouseOnGrid()
+                buttonClick = self.mouseOnButton()
                 if selected:
                     self.selected.add(selected)
+                if buttonClick:
+                    self.selected = set()
+                    self.grid = self.challengesGeneretor(challenges, testboard)
+            if event.type == pygame.MOUSEBUTTONDOWN and event.button == 3:
+                selected = self.mouseOnGrid()
+                if selected:
+                    try:
+                        self.selected.remove(selected)
+                    except:
+                        pass
                 else:
-                    print("not on board")
-                    # self.selected = None
+                    pass
 
     def playing_update(self):
         self.mousePos = pygame.mouse.get_pos()
@@ -47,7 +55,8 @@ class App:
             button.update(self.mousePos)
 
     def playing_draw(self):
-        self.window.fill(WHITE)
+        self.drawBackground(background, 0,0)
+        self.drawGridBackground(self.window)
 
         for button in self.playingButtons:
             button.draw(self.window)
@@ -57,7 +66,6 @@ class App:
                 self.drawSelection(self.window, selected)
 
         self.drawText(self.window)
-
         self.drawGrid(self.window)
         pygame.display.update()
 
@@ -66,38 +74,62 @@ class App:
         for yidx, row in enumerate(self.grid):
             for xidx, chlng in enumerate(row):
                 if chlng != "":
-                    pos = [(xidx * cellSize) + gridPos[0], (yidx * cellSize) + gridPos[1]]
-                    self.textToScreen(window, chlng, pos)
+                    pos = [(xidx * cellSizeW) + gridPos[0], (yidx * cellSizeH) + gridPos[1]]
+                    self.textToScreen(window, str(chlng), pos)
 
     def drawSelection(self, window, pos):
         pygame.draw.rect(window, RED,
-                         ((pos[0] * cellSize) + gridPos[0], (pos[1] * cellSize) + gridPos[1], cellSize, cellSize))
+                         ((pos[0] * cellSizeW) + gridPos[0], (pos[1] * cellSizeH) + gridPos[1], cellSizeW, cellSizeH))
+
+    def drawGridBackground(self, window):
+        pygame.draw.rect(window, LIGHTBLUE,
+                         (gridPos[0], gridPos[1], WIDTH - 154, HEIGHT - 150))
 
     def drawGrid(self, window):
-        pygame.draw.rect(window, BLACK, (gridPos[0], gridPos[1], WIDTH - 150, HEIGHT - 150), 2)
+        pygame.draw.rect(window, BLACK, (gridPos[0], gridPos[1], WIDTH - 154, HEIGHT - 150), 2)
         for x in range(5):
-            pygame.draw.line(window, BLACK, (gridPos[0] + (x * cellSize), gridPos[1]),
-                             (gridPos[0] + (x * cellSize), gridPos[1] + 450))
-            pygame.draw.line(window, BLACK, (gridPos[0], gridPos[1] + (x * cellSize)),
-                             (gridPos[0] + 450, gridPos[1] + (x * cellSize)))
+            # ||
+            pygame.draw.line(window, BLACK,
+                             (gridPos[0] + (x * cellSizeW), gridPos[1]),
+                             (gridPos[0] + (x * cellSizeW), gridPos[1] + 570))
+            # =
+            pygame.draw.line(window, BLACK,
+                             (gridPos[0], gridPos[1] + (x * cellSizeH)),
+                             (gridPos[0] + 1125, gridPos[1] + (x * cellSizeH)))
 
     def mouseOnGrid(self):
         if self.mousePos[0] < gridPos[0] or self.mousePos[1] < gridPos[1]:
             return False
-        if self.mousePos[0] > gridPos[0] + gridSize or self.mousePos[1] > gridPos[1] + gridSize:
+        if self.mousePos[0] > gridPos[0] + gridSizeW or self.mousePos[1] > gridPos[1] + gridSizeH:
             return False
-        return ((self.mousePos[0] - gridPos[0]) // cellSize, (self.mousePos[1] - gridPos[1]) // cellSize)
+        return ((self.mousePos[0] - gridPos[0]) // cellSizeW, (self.mousePos[1] - gridPos[1]) // cellSizeH)
+
+    def mouseOnButton(self):
+        if self.mousePos[0] < buttonPosition[0] or self.mousePos[1] < buttonPosition[1]:
+            return False
+        if self.mousePos[0] > buttonPosition[0] + bW or self.mousePos[1] > buttonPosition[1] + bH:
+            return False
+        return ((self.mousePos[0] - buttonPosition[0]), (self.mousePos[1] - buttonPosition[1]))
 
     def loadButtons(self):
-        self.playingButtons.append(Button(20, 40, 100, 40))
+        self.playingButtons.append(Button(WIDTH//2 - 100, 20, 200, 40))
 
     def textToScreen(self, window, text, pos):
-        font = self.font.render(text, False, BLACK)
+        font = self.font.render(text, True, BLACK)
+        fontWidth = font.get_width()
+        fontHeight = font.get_height()
+        pos[0] += (cellSizeW-fontWidth)//2
+        pos[1] += (cellSizeH - fontHeight) // 2
         window.blit(font, pos)
 
     def challengesGeneretor(self, challenges, board):
-        for n,i in enumerate(board):
-            for idx,j in enumerate(i):
-                x = random.randrange(0, len(challenges))
-                board[n][idx] = challenges[x]
-                challenges.remove(challenges[x])
+        challenges1 = challenges[:]
+        for n, i in enumerate(board):
+            for j in range(len(i)):
+                x = random.randint(0, len(challenges1) - 1)
+                board[n][j] = challenges1[x]
+                challenges1.remove(challenges1[x])
+        return board
+
+    def drawBackground(self, background, xpos, ypos):
+        self.window.blit(pygame.transform.scale(background, (WIDTH,HEIGHT)), [xpos, ypos])
