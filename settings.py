@@ -40,6 +40,7 @@ challenges = [
 
 title = "Rocket-League Bingo"
 background = pygame.image.load('img.jpg')
+donateIMG = pygame.image.load('donate.png')
 
 # Colors
 WHITE = (255,255,255)
@@ -71,3 +72,7 @@ gridSizeH = cellSizeH*5
 buttonPosition = (WIDTH//2 - 100, 20)
 bW = 200
 bH = 40
+
+donateP = [1100, 650]
+donateW = 100
+donateH = 100
