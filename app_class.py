@@ -1,8 +1,6 @@
-import pygame, sys, random, webbrowser
+import pygame, random, webbrowser
 from settings import *
 from buttonClass import *
-
-
 
 class App:
     def __init__(self):
@@ -14,6 +12,7 @@ class App:
         self.selected = set()
         self.mousePos = None
         self.state = "waiting"
+        self.beforeBingo = 1
         self.playingButtons = []
         self.font = pygame.font.SysFont("Comic Sans MS", 18)
         self.loadButtons()
@@ -29,24 +28,9 @@ class App:
                 self.playing_update()
                 self.playing_draw()
         pygame.quit()
-        sys.exit()
+        #sys.exit()
 
     #### PLAYING STATE ####
-    def waiting(self):
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                self.running = False
-            if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
-                buttonClick = self.mouseOnButton()
-                donateClick = self.mouseOnDonate()
-                if buttonClick:
-                    self.state = "playing"
-                    self.selected = set()
-                    self.grid = self.challengesGeneretor(challenges, cleanBoard)
-                if donateClick:
-                    webbrowser.open('https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=GABEG8C4PZ298&source=url')
-
-
     def playing_events(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -57,9 +41,15 @@ class App:
                 donateClick = self.mouseOnDonate()
                 if selected:
                     self.selected.add(selected)
+                    if self.beforeBingo == 1:
+                        if self.findBingo(self.selected) == "BINGO":
+                            self.bingoToScreen()
+                            pygame.display.update()
+                            pygame.time.wait(2000)
+                            self.beforeBingo = 0
                 if buttonClick:
                     self.state = "playing"
-                    self.selected = set()
+                    self.selected.clear()
                     self.grid = self.challengesGeneretor(challenges, cleanBoard)
                 if donateClick:
                     webbrowser.open('https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=GABEG8C4PZ298&source=url')
@@ -73,6 +63,20 @@ class App:
                         pass
                 else:
                     pass
+
+    def waiting(self):
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                self.running = False
+            if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+                buttonClick = self.mouseOnButton()
+                donateClick = self.mouseOnDonate()
+                if buttonClick:
+                    self.state = "playing"
+                    self.selected = set()
+                    self.grid = self.challengesGeneretor(challenges, cleanBoard)
+                if donateClick:
+                    webbrowser.open('https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=GABEG8C4PZ298&source=url')
 
     def playing_update(self):
         self.mousePos = pygame.mouse.get_pos()
@@ -139,7 +143,6 @@ class App:
 
     def loadButtons(self):
         self.playingButtons.append(Button(WIDTH//2 - 100, 20, 200, 40, "Generate new bingo!"))
-        #self.playingButtons.append(Button(1150, 680, 100, 30, "Donate <3"))
 
     def textToScreen(self, window, text, pos):
         font = self.font.render(text, True, BLACK)
@@ -170,3 +173,27 @@ class App:
         if self.mousePos[0] > donateP[0] + donateW or self.mousePos[1] > donateP[1] + donateH:
             return False
         return ((self.mousePos[0] - donateP[0]), (self.mousePos[1] - donateP[1]))
+
+    def findBingo(self, set):
+        selected = list(set.copy())
+        countX0, countX1, countX2, countX3, countX4, countY0, countY1, countY2, countY3, countY4 = 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+        for i in selected:
+            if i[0] == 0: countX0 += 1
+            if i[0] == 1: countX1 += 1
+            if i[0] == 2: countX2 += 1
+            if i[0] == 3: countX3 += 1
+            if i[0] == 4: countX4 += 1
+        for i in selected:
+            if i[1] == 0: countY0 += 1
+            if i[1] == 1: countY1 += 1
+            if i[1] == 2: countY2 += 1
+            if i[1] == 3: countY3 += 1
+            if i[1] == 4: countY4 += 1
+        if countX0 == 5 or countX1 == 5 or countX2 == 5 or countX3 == 5 or countX4 == 5 or countY0 == 5 or countY1 == 5 or countY2 == 5 or countY3 == 5 or countY4 == 5:
+            return "BINGO"
+        if (0,0) in set and (1,1) in set and (2,2) in set and (3,3) in set and (4,4) in set or (0,4) in set and (1,3) in set and (2,2) in set and (3,1) in set and (4,0) in set:
+            return "BINGO"
+
+    def bingoToScreen(self):
+        self.window.blit(pygame.transform.scale(bingoIMG, (WIDTH,HEIGHT)), [0,0])
+
