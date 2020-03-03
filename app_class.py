@@ -44,7 +44,7 @@ class App:
                     self.selected = set()
                     self.grid = self.challengesGeneretor(challenges, cleanBoard)
                 if donateClick:
-                    webbrowser.open('https://www.paypal.com/donate/?token=WbU_LYZUBv53xL1rL5zAP-3YJqDPLRt_b4GCnDrGdSNhOCIP85I7jub7YlSctockE8o1zG&country.x=IL&locale.x=IL')
+                    webbrowser.open('https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=GABEG8C4PZ298&source=url')
 
 
     def playing_events(self):
@@ -62,7 +62,7 @@ class App:
                     self.selected = set()
                     self.grid = self.challengesGeneretor(challenges, cleanBoard)
                 if donateClick:
-                    webbrowser.open('https://www.paypal.com/donate/?token=WbU_LYZUBv53xL1rL5zAP-3YJqDPLRt_b4GCnDrGdSNhOCIP85I7jub7YlSctockE8o1zG&country.x=IL&locale.x=IL')
+                    webbrowser.open('https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=GABEG8C4PZ298&source=url')
 
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 3:
                 selected = self.mouseOnGrid()
