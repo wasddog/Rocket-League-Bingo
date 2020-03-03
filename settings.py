@@ -41,6 +41,7 @@ challenges = [
 title = "Rocket-League Bingo"
 background = pygame.image.load('img.jpg')
 donateIMG = pygame.image.load('donate.png')
+bingoIMG = pygame.image.load('bingo.png')
 
 # Colors
 WHITE = (255,255,255)
