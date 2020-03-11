@@ -2,7 +2,5 @@
 
 A fun little game thats makes playing Rocket-League just a little bit more fun and challenging!  
 
-![alt text](http://prntscr.com/rehcrl)
-
 Left-click to select, right-click to deselect...  
 (you can edit/add/remove challenges in the challenges.txt file)
